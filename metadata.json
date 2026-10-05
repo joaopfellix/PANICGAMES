@@ -1,6 +1,8 @@
 {
-  "name": "Portal de Jogos Desbloqueados",
-  "description": "Coleção completa e rápida de jogos desbloqueados em HTML5 e iframe sem anúncios ou bloqueios.",
+  "name": "PANIC GAMES",
+  "description": "PANIC GAMES é um espaço dedicado a jogos para todos os tipos de jogadores.\n\nAqui você encontra uma seleção de jogos para jogar direto no navegador, passando por diferentes gêneros, estilos e experiências. A ideia é simples: entrar, escolher seu jogo e começar a jogar.\n\nPANIC GAMES. Escolha seu jogo. Entre em pânico. Divirta-se.\n",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }
