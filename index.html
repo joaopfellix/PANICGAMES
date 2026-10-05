@@ -14,8 +14,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet" />
   </head>
   <body class="bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div id="root">
+      <!-- Fallback message in case JavaScript is disabled or page loading is delayed on GitHub Pages -->
+      <noscript>
+        <div style="padding: 40px; text-align: center; font-family: sans-serif; background: #020617; color: #fff; min-height: 100vh;">
+          <h1 style="color: #f43f5e; font-size: 28px;">PANIC GAMES</h1>
+          <p style="color: #94a3b8; margin-top: 12px;">Por favor, habilite o JavaScript no navegador para jogar.</p>
+        </div>
+      </noscript>
+    </div>
+
+    <!-- Ponto de entrada do aplicativo Vite / React -->
+    <script type="module" src="./src/main.jsx"></script>
   </body>
 </html>
-
