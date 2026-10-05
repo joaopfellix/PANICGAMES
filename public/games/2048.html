@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>2048 Clássico</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    body {
+      background: #090d16;
+      color: #f1f5f9;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+    .header {
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .title {
+      font-size: 32px;
+      font-weight: 800;
+      color: #f59e0b;
+    }
+    .score-container {
+      display: flex;
+      gap: 8px;
+    }
+    .score-box {
+      background: #1e293b;
+      padding: 6px 12px;
+      border-radius: 8px;
+      text-align: center;
+      min-width: 70px;
+    }
+    .score-label {
+      font-size: 10px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .score-value {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .board-container {
+      position: relative;
+      background: #0f172a;
+      border: 3px solid #1e293b;
+      border-radius: 12px;
+      padding: 10px;
+      width: 360px;
+      height: 360px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    }
+    .tile {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 800;
+      border-radius: 8px;
+      transition: transform 0.12s ease;
+      background: #1e293b;
+      color: #64748b;
+    }
+    .tile[data-val="2"] { background: #334155; color: #f8fafc; font-size: 24px; }
+    .tile[data-val="4"] { background: #475569; color: #f8fafc; font-size: 24px; }
+    .tile[data-val="8"] { background: #f97316; color: #fff; font-size: 24px; }
+    .tile[data-val="16"] { background: #ea580c; color: #fff; font-size: 22px; }
+    .tile[data-val="32"] { background: #ef4444; color: #fff; font-size: 22px; }
+    .tile[data-val="64"] { background: #dc2626; color: #fff; font-size: 22px; }
+    .tile[data-val="128"] { background: #eab308; color: #fff; font-size: 20px; box-shadow: 0 0 10px #eab308; }
+    .tile[data-val="256"] { background: #ca8a04; color: #fff; font-size: 20px; box-shadow: 0 0 12px #ca8a04; }
+    .tile[data-val="512"] { background: #10b981; color: #fff; font-size: 18px; box-shadow: 0 0 14px #10b981; }
+    .tile[data-val="1024"] { background: #06b6d4; color: #fff; font-size: 16px; box-shadow: 0 0 16px #06b6d4; }
+    .tile[data-val="2048"] { background: #8b5cf6; color: #fff; font-size: 16px; box-shadow: 0 0 20px #8b5cf6; }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 10px;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      text-align: center;
+      padding: 20px;
+    }
+    .overlay.active { display: flex; }
+    .overlay h2 { font-size: 26px; color: #f59e0b; margin-bottom: 6px; }
+    .btn {
+      margin-top: 14px;
+      background: #f59e0b;
+      color: #0f172a;
+      font-weight: 700;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn:hover { background: #fbbf24; }
+    .instructions {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">2048</div>
+    <div class="score-container">
+      <div class="score-box">
+        <div class="score-label">Pontos</div>
+        <div id="score" class="score-value">0</div>
+      </div>
+      <div class="score-box">
+        <div class="score-label">Recorde</div>
+        <div id="bestScore" class="score-value">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="board-container">
+    <div id="board" style="display: contents;"></div>
+    <div id="overlay" class="overlay">
+      <h2 id="overlayMsg">Fim de Jogo!</h2>
+      <button class="btn" onclick="resetGame()">Jogar Novamente</button>
+    </div>
+  </div>
+
+  <div class="instructions">Use as Setas, WASD ou Deslize o Dedo na Tela</div>
+
+  <script>
+    const SIZE = 4;
+    let grid = [];
+    let score = 0;
+    let best = localStorage.getItem('2048_best') || 0;
+    document.getElementById('bestScore').innerText = best;
+
+    function init() {
+      grid = Array(SIZE).fill(null).map(() => Array(SIZE).fill(0));
+      score = 0;
+      updateScore(0);
+      addRandomTile();
+      addRandomTile();
+      render();
+      document.getElementById('overlay').classList.remove('active');
+    }
+
+    function addRandomTile() {
+      const empty = [];
+      for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+          if (grid[r][c] === 0) empty.push({ r, c });
+        }
+      }
+      if (empty.length > 0) {
+        const spot = empty[Math.floor(Math.random() * empty.length)];
+        grid[spot.r][spot.c] = Math.random() < 0.9 ? 2 : 4;
+      }
+    }
+
+    function render() {
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+      for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+          const val = grid[r][c];
+          const div = document.createElement('div');
+          div.className = 'tile';
+          div.dataset.val = val;
+          div.innerText = val > 0 ? val : '';
+          board.appendChild(div);
+        }
+      }
+    }
+
+    function updateScore(add) {
+      score += add;
+      document.getElementById('score').innerText = score;
+      if (score > best) {
+        best = score;
+        document.getElementById('bestScore').innerText = best;
+        localStorage.setItem('2048_best', best);
+      }
+    }
+
+    function slide(row) {
+      let arr = row.filter(val => val !== 0);
+      let addScore = 0;
+      for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] === arr[i + 1]) {
+          arr[i] *= 2;
+          addScore += arr[i];
+          arr.splice(i + 1, 1);
+        }
+      }
+      while (arr.length < SIZE) arr.push(0);
+      return { row: arr, addScore };
+    }
+
+    function moveLeft() {
+      let moved = false;
+      let totalAdd = 0;
+      for (let r = 0; r < SIZE; r++) {
+        const res = slide(grid[r]);
+        if (JSON.stringify(grid[r]) !== JSON.stringify(res.row)) moved = true;
+        grid[r] = res.row;
+        totalAdd += res.addScore;
+      }
+      if (moved) {
+        updateScore(totalAdd);
+        addRandomTile();
+        render();
+        checkGameOver();
+      }
+    }
+
+    function moveRight() {
+      let moved = false;
+      let totalAdd = 0;
+      for (let r = 0; r < SIZE; r++) {
+        const reversed = [...grid[r]].reverse();
+        const res = slide(reversed);
+        const normal = res.row.reverse();
+        if (JSON.stringify(grid[r]) !== JSON.stringify(normal)) moved = true;
+        grid[r] = normal;
+        totalAdd += res.addScore;
+      }
+      if (moved) {
+        updateScore(totalAdd);
+        addRandomTile();
+        render();
+        checkGameOver();
+      }
+    }
+
+    function moveUp() {
+      let moved = false;
+      let totalAdd = 0;
+      for (let c = 0; c < SIZE; c++) {
+        let col = [grid[0][c], grid[1][c], grid[2][c], grid[3][c]];
+        const res = slide(col);
+        for (let r = 0; r < SIZE; r++) {
+          if (grid[r][c] !== res.row[r]) moved = true;
+          grid[r][c] = res.row[r];
+        }
+        totalAdd += res.addScore;
+      }
+      if (moved) {
+        updateScore(totalAdd);
+        addRandomTile();
+        render();
+        checkGameOver();
+      }
+    }
+
+    function moveDown() {
+      let moved = false;
+      let totalAdd = 0;
+      for (let c = 0; c < SIZE; c++) {
+        let col = [grid[3][c], grid[2][c], grid[1][c], grid[0][c]];
+        const res = slide(col);
+        const normal = res.row.reverse();
+        for (let r = 0; r < SIZE; r++) {
+          if (grid[r][c] !== normal[r]) moved = true;
+          grid[r][c] = normal[r];
+        }
+        totalAdd += res.addScore;
+      }
+      if (moved) {
+        updateScore(totalAdd);
+        addRandomTile();
+        render();
+        checkGameOver();
+      }
+    }
+
+    function checkGameOver() {
+      for (let r = 0; r < SIZE; r++) {
+        for (let c = 0; c < SIZE; c++) {
+          if (grid[r][c] === 0) return;
+          if (c < SIZE - 1 && grid[r][c] === grid[r][c + 1]) return;
+          if (r < SIZE - 1 && grid[r][c] === grid[r + 1][c]) return;
+        }
+      }
+      document.getElementById('overlayMsg').innerText = 'Fim de Jogo!';
+      document.getElementById('overlay').classList.add('active');
+    }
+
+    function resetGame() {
+      init();
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (['ArrowUp', 'w', 'W'].includes(e.key)) { e.preventDefault(); moveUp(); }
+      else if (['ArrowDown', 's', 'S'].includes(e.key)) { e.preventDefault(); moveDown(); }
+      else if (['ArrowLeft', 'a', 'A'].includes(e.key)) { e.preventDefault(); moveLeft(); }
+      else if (['ArrowRight', 'd', 'D'].includes(e.key)) { e.preventDefault(); moveRight(); }
+    });
+
+    // Touch swipe support
+    let touchStartX = 0, touchStartY = 0;
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    document.addEventListener('touchend', e => {
+      const diffX = e.changedTouches[0].screenX - touchStartX;
+      const diffY = e.changedTouches[0].screenY - touchStartY;
+      if (Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 30) moveRight();
+        else if (diffX < -30) moveLeft();
+      } else {
+        if (diffY > 30) moveDown();
+        else if (diffY < -30) moveUp();
+      }
+    }, { passive: true });
+
+    init();
+  </script>
+</body>
+</html>

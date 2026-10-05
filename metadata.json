@@ -1,0 +1,6 @@
+{
+  "name": "Portal de Jogos Desbloqueados",
+  "description": "Coleção completa e rápida de jogos desbloqueados em HTML5 e iframe sem anúncios ou bloqueios.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
