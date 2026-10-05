@@ -4,9 +4,12 @@ import { Navbar } from './components/Navbar';
 import { HeroBanner } from './components/HeroBanner';
 import { GameCard } from './components/GameCard';
 import { GamePlayer } from './components/GamePlayer';
-import { AddGameModal } from './components/AddGameModal';
+import { AuthModal } from './components/AuthModal';
+import { UserProfileModal } from './components/UserProfileModal';
 import { DisguiseView } from './components/DisguiseView';
-import { Gamepad2 } from 'lucide-react';
+import { Gamepad2, User } from 'lucide-react';
+import { auth } from './services/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 export default function App() {
   const [games, setGames] = useState(() => {
@@ -25,17 +28,29 @@ export default function App() {
   const [favorites, setFavorites] = useState(() => {
     try {
       const stored = localStorage.getItem('unblocked_favorites');
-      return stored ? JSON.parse(stored) : ['snake-retro', 'game-2048'];
+      return stored ? JSON.parse(stored) : [];
     } catch {
-      return ['snake-retro', 'game-2048'];
+      return [];
     }
   });
 
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGame, setSelectedGame] = useState(null);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDisguiseActive, setIsDisguiseActive] = useState(false);
+
+  // User Authentication State
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  // Observe Firebase Auth
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Sync favorites with localStorage
   useEffect(() => {
@@ -75,17 +90,6 @@ export default function App() {
     );
   };
 
-  const handleAddCustomGame = (newGame) => {
-    setGames((prev) => [newGame, ...prev]);
-    try {
-      const storedCustom = localStorage.getItem('unblocked_custom_games');
-      const list = storedCustom ? JSON.parse(storedCustom) : [];
-      localStorage.setItem('unblocked_custom_games', JSON.stringify([newGame, ...list]));
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
   // Filtered games
   const filteredGames = useMemo(() => {
     return games.filter((game) => {
@@ -118,10 +122,10 @@ export default function App() {
     { id: 'all', label: 'Todos os Jogos' },
     { id: 'popular', label: 'Mais Populares' },
     { id: 'favorites', label: `Favoritos (${favorites.length})` },
+    { id: 'Ação', label: 'Ação' },
     { id: 'Clássicos', label: 'Clássicos' },
     { id: 'Arcade', label: 'Arcade' },
     { id: 'Puzzle', label: 'Puzzle' },
-    { id: 'Ação', label: 'Ação' },
   ];
 
   if (isDisguiseActive) {
@@ -134,7 +138,9 @@ export default function App() {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         favoritesCount={favorites.length}
-        onOpenAddModal={() => setIsAddModalOpen(true)}
+        currentUser={currentUser}
+        onOpenAuthModal={() => setIsAuthModalOpen(true)}
+        onOpenProfileModal={() => setIsProfileModalOpen(true)}
         disguiseActive={isDisguiseActive}
         onToggleDisguise={() => setIsDisguiseActive(!isDisguiseActive)}
         onSelectGame={(id) => {
@@ -151,6 +157,8 @@ export default function App() {
             onSelectGame={(game) => setSelectedGame(game)}
             isFavorite={favorites.includes(selectedGame.id)}
             onToggleFavorite={toggleFavorite}
+            currentUser={currentUser}
+            onOpenAuthModal={() => setIsAuthModalOpen(true)}
           />
         ) : (
           <>
@@ -182,7 +190,7 @@ export default function App() {
                       onClick={() => setActiveTab(cat.id)}
                       className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap shrink-0 ${
                         activeTab === cat.id
-                          ? 'bg-emerald-400 text-slate-950 shadow-sm shadow-emerald-500/20'
+                          ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/20'
                           : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-100 hover:border-slate-700'
                       }`}
                     >
@@ -253,11 +261,21 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Add Custom Game Modal */}
-      <AddGameModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onAddGame={handleAddCustomGame}
+      {/* User Authentication Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onAuthSuccess={(user) => {
+          setCurrentUser(user);
+        }}
+      />
+
+      {/* User Profile and Cloud Progress Modal */}
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        user={currentUser}
+        onLogout={() => setCurrentUser(null)}
       />
     </div>
   );

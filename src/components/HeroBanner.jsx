@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Play, Zap } from 'lucide-react';
+import { Search, Play, Zap, Plus } from 'lucide-react';
 import heroImg from '../assets/images/hero_arcade_games_1791231387363.jpg';
 
 export const HeroBanner = ({
@@ -29,7 +29,7 @@ export const HeroBanner = ({
             <span className="font-heading uppercase tracking-wider text-rose-400 font-bold">PANIC GAMES</span>
             <span aria-hidden="true" className="text-slate-600">·</span>
             <span className="flex items-center gap-1 text-emerald-400">
-              <Zap className="h-3 w-3" /> {totalGames} Jogos em Iframe
+              <Zap className="h-3 w-3" /> {totalGames} {totalGames === 1 ? 'Jogo em Iframe' : 'Jogos em Iframe'}
             </span>
             <span aria-hidden="true" className="text-slate-600">·</span>
             <span className="text-slate-300">100% Desbloqueados</span>
@@ -71,8 +71,17 @@ export const HeroBanner = ({
               onClick={onQuickPlay}
               className="flex items-center justify-center gap-2 rounded-lg bg-emerald-400 px-5 py-2.5 text-sm font-bold text-slate-950 hover:bg-emerald-300 transition-colors shadow-md shadow-emerald-500/20 shrink-0"
             >
-              <Play className="h-4 w-4 fill-slate-950" />
-              <span>Jogar Aleatório</span>
+              {totalGames > 0 ? (
+                <>
+                  <Play className="h-4 w-4 fill-slate-950" />
+                  <span>Jogar Aleatório</span>
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4 stroke-[3]" />
+                  <span>Adicionar Jogo</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -80,3 +89,4 @@ export const HeroBanner = ({
     </section>
   );
 };
+

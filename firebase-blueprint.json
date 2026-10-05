@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Dados do perfil do usuário cadastrado no PANIC GAMES",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID do usuário do Firebase Auth"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Nome ou apelido do jogador",
+          "maxLength": 60
+        },
+        "email": {
+          "type": "string",
+          "description": "E-mail do jogador"
+        },
+        "photoURL": {
+          "type": "string",
+          "description": "Avatar do jogador",
+          "maxLength": 500
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp de cadastro"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp de última atualização"
+        }
+      },
+      "required": ["userId", "displayName", "email"]
+    },
+    "GameProgress": {
+      "title": "GameProgress",
+      "description": "Progresso salvo, pontuações e estatísticas do jogo por usuário",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID do usuário proprietário"
+        },
+        "gameId": {
+          "type": "string",
+          "description": "Identificador do jogo",
+          "maxLength": 80
+        },
+        "gameTitle": {
+          "type": "string",
+          "description": "Nome do jogo",
+          "maxLength": 80
+        },
+        "highScore": {
+          "type": "number",
+          "description": "Maior pontuação ou recorde alcançado"
+        },
+        "playTimeSeconds": {
+          "type": "number",
+          "description": "Tempo total jogado em segundos"
+        },
+        "sessionsCount": {
+          "type": "number",
+          "description": "Número de partidas jogadas"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Anotações ou conquistas do jogador",
+          "maxLength": 300
+        },
+        "lastPlayedAt": {
+          "type": "string",
+          "description": "Data/hora da última partida"
+        }
+      },
+      "required": ["userId", "gameId"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "UserProfile"
+      },
+      "description": "Coleção de perfis de jogadores"
+    },
+    "/users/{userId}/progress/{gameId}": {
+      "schema": {
+        "$ref": "GameProgress"
+      },
+      "description": "Subcoleção contendo progresso, tempo e pontuação de cada jogo"
+    }
+  }
+}

@@ -1,11 +1,13 @@
 import React from 'react';
-import { Gamepad2, Plus, ShieldCheck, Heart } from 'lucide-react';
+import { Gamepad2, ShieldCheck, Heart, User, LogIn } from 'lucide-react';
 
 export const Navbar = ({
   activeTab,
   setActiveTab,
   favoritesCount,
-  onOpenAddModal,
+  currentUser,
+  onOpenAuthModal,
+  onOpenProfileModal,
   disguiseActive,
   onToggleDisguise,
   onSelectGame,
@@ -97,14 +99,38 @@ export const Navbar = ({
             <span className="hidden sm:inline">Modo Disfarce</span>
           </button>
 
-          {/* Add Game Button */}
-          <button
-            onClick={onOpenAddModal}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-slate-950 bg-emerald-400 rounded-lg hover:bg-emerald-300 transition-colors shadow-sm shadow-emerald-500/20 whitespace-nowrap"
-          >
-            <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
-            <span>Adicionar Jogo</span>
-          </button>
+          {/* User Account Button: Entrar/Cadastrar OR Profile */}
+          {currentUser ? (
+            <button
+              onClick={onOpenProfileModal}
+              title="Meu Perfil e Progresso Salvo"
+              className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-slate-100 bg-slate-900 border border-slate-700/80 rounded-xl hover:border-rose-500/50 hover:bg-slate-800 transition-all shadow-sm"
+            >
+              {currentUser.photoURL ? (
+                <img
+                  src={currentUser.photoURL}
+                  alt={currentUser.displayName || 'Jogador'}
+                  referrerPolicy="no-referrer"
+                  className="h-5 w-5 rounded-full object-cover border border-rose-500"
+                />
+              ) : (
+                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-rose-500 text-white font-bold text-[10px]">
+                  {(currentUser.displayName || currentUser.email || 'J')[0].toUpperCase()}
+                </div>
+              )}
+              <span className="max-w-[100px] truncate">
+                {currentUser.displayName || currentUser.email.split('@')[0]}
+              </span>
+            </button>
+          ) : (
+            <button
+              onClick={onOpenAuthModal}
+              className="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-white bg-rose-500 rounded-xl hover:bg-rose-600 transition-colors shadow-sm shadow-rose-500/25 whitespace-nowrap"
+            >
+              <User className="h-3.5 w-3.5 stroke-[2.5]" />
+              <span>Entrar / Cadastrar</span>
+            </button>
+          )}
         </div>
       </div>
     </header>
