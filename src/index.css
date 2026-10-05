@@ -3,25 +3,45 @@
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #030305;
+    color: #f1f5f9;
   }
   
   h1, h2, h3, .font-heading {
     font-family: 'Rajdhani', 'Plus Jakarta Sans', system-ui, sans-serif;
+    letter-spacing: 0.05em;
   }
 }
 
-/* Custom dark scrollbar */
+/* Custom blood-red dark scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #090d16;
+  background: #050508;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #2a0a10;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #dc2626;
+}
+
+/* Glow effects matching the PANIC emblem */
+.panic-glow-sm {
+  box-shadow: 0 0 15px rgba(220, 38, 38, 0.25);
+}
+
+.panic-glow-md {
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.35);
+}
+
+.panic-glow-text {
+  text-shadow: 0 0 12px rgba(220, 38, 38, 0.6);
+}
+
+.panic-border-glow {
+  box-shadow: inset 0 0 12px rgba(220, 38, 38, 0.15), 0 0 12px rgba(220, 38, 38, 0.2);
 }

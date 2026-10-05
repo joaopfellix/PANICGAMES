@@ -10,10 +10,10 @@ export const GameCard = ({
   return (
     <div
       onClick={() => onSelect(game)}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-slate-800 bg-slate-900/60 transition-all duration-200 hover:-translate-y-1 hover:border-slate-700 hover:shadow-xl hover:shadow-emerald-950/20 cursor-pointer"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-xl border border-zinc-800/80 bg-zinc-950/80 transition-all duration-200 hover:-translate-y-1 hover:border-red-600/70 hover:shadow-xl hover:shadow-red-950/30 hover:panic-glow-sm cursor-pointer"
     >
       {/* Thumbnail area */}
-      <div className="relative aspect-video w-full overflow-hidden bg-slate-950">
+      <div className="relative aspect-video w-full overflow-hidden bg-black">
         {game.thumbnail ? (
           <img
             src={game.thumbnail}
@@ -26,25 +26,24 @@ export const GameCard = ({
           <div
             className="flex h-full w-full flex-col items-center justify-center p-6 text-center"
             style={{
-              background: `radial-gradient(circle at 50% 50%, ${game.accentColor}25 0%, #030712 90%)`,
+              background: `radial-gradient(circle at 50% 50%, #dc262625 0%, #030305 90%)`,
             }}
           >
             <div
-              className="flex h-12 w-12 items-center justify-center rounded-lg border border-slate-700/50 bg-slate-900/80 mb-2 shadow-inner"
-              style={{ color: game.accentColor }}
+              className="flex h-12 w-12 items-center justify-center rounded-lg border border-red-950 bg-black mb-2 shadow-inner text-red-500"
             >
               <Play className="h-6 w-6 fill-current" />
             </div>
-            <span className="font-heading text-lg font-bold tracking-wide text-slate-200">
+            <span className="font-heading text-lg font-bold tracking-wide text-zinc-200">
               {game.title}
             </span>
           </div>
         )}
 
         {/* Play hover overlay */}
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-950/50 opacity-0 backdrop-blur-[2px] transition-opacity duration-200 group-hover:opacity-100">
-          <div className="flex items-center gap-2 rounded-lg bg-emerald-400 px-4 py-2 text-xs font-bold text-slate-950 shadow-lg shadow-emerald-500/30">
-            <Play className="h-3.5 w-3.5 fill-slate-950" />
+        <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-200 group-hover:opacity-100">
+          <div className="flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2 text-xs font-black uppercase tracking-wider text-white shadow-xl shadow-red-600/40 panic-glow-sm">
+            <Play className="h-3.5 w-3.5 fill-white" />
             <span>JOGAR AGORA</span>
           </div>
         </div>
@@ -55,11 +54,11 @@ export const GameCard = ({
             type="button"
             onClick={(e) => onToggleFavorite(game.id, e)}
             title={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
-            className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-950/70 text-slate-300 backdrop-blur-md transition-colors hover:bg-slate-900 hover:text-rose-400"
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-black/70 text-zinc-300 backdrop-blur-md transition-colors hover:bg-zinc-900 hover:text-red-500"
           >
             <Heart
               className={`h-4 w-4 transition-transform active:scale-125 ${
-                isFavorite ? 'fill-rose-500 text-rose-500' : 'text-slate-300'
+                isFavorite ? 'fill-red-500 text-red-500' : 'text-zinc-400'
               }`}
             />
           </button>
@@ -67,37 +66,36 @@ export const GameCard = ({
       </div>
 
       {/* Content area */}
-      <div className="flex flex-1 flex-col p-4">
+      <div className="flex flex-1 flex-col p-4 bg-zinc-950/40">
         {/* Zero-Pill Metadata Discipline */}
-        <div className="flex items-center gap-2 text-xs text-slate-400 mb-1.5 font-medium">
-          <span className="text-emerald-400">{game.category}</span>
-          <span aria-hidden="true" className="text-slate-600">·</span>
-          <span className="flex items-center gap-0.5 text-amber-300">
-            <Star className="h-3 w-3 fill-amber-300" />
-            <span className="font-mono tabular-nums">{game.rating.toFixed(1)}</span>
+        <div className="flex items-center gap-2 text-xs text-zinc-400 mb-1.5 font-medium">
+          <span className="text-red-400 font-bold uppercase tracking-wider text-[11px]">{game.category}</span>
+          <span aria-hidden="true" className="text-zinc-700">·</span>
+          <span className="flex items-center gap-0.5 text-amber-400">
+            <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
+            <span className="font-mono text-zinc-200">{game.rating ? game.rating.toFixed(1) : '5.0'}</span>
           </span>
-          <span aria-hidden="true" className="text-slate-600">·</span>
-          <span className="font-mono tabular-nums text-slate-400">{game.plays} plays</span>
+          <span aria-hidden="true" className="text-zinc-700">·</span>
+          <span className="font-mono text-zinc-400">{game.plays || '0'} plays</span>
         </div>
 
-        {/* Title */}
-        <h3 className="font-heading text-lg font-bold text-slate-100 group-hover:text-emerald-400 transition-colors">
+        <h3 className="font-heading text-lg font-black text-white group-hover:text-red-400 transition-colors uppercase tracking-wide">
           {game.title}
         </h3>
 
-        {/* Description */}
-        <p className="mt-1 line-clamp-2 text-xs text-slate-400 leading-relaxed">
+        <p className="mt-1 text-xs text-zinc-400 line-clamp-2 leading-relaxed">
           {game.description}
         </p>
 
-        {/* Card Footer with iframe indicator */}
-        <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
-          <span className="flex items-center gap-1.5 text-slate-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-            <span>Iframe Ativo</span>
+        {/* Bottom card footer */}
+        <div className="mt-4 flex items-center justify-between border-t border-zinc-900 pt-3 text-[11px] text-zinc-400">
+          <span className="font-mono text-zinc-400 truncate max-w-[170px]">
+            {game.controls && game.controls[0] ? game.controls[0].split(':')[0] : 'Teclado'}
           </span>
-          <span className="font-semibold text-emerald-400/90 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
-            Abrir Jogo &rarr;
+
+          <span className="font-bold text-red-400 group-hover:translate-x-0.5 transition-transform flex items-center gap-1">
+            <span>Jogar</span>
+            <span aria-hidden="true">&rarr;</span>
           </span>
         </div>
       </div>

@@ -5,6 +5,7 @@ import {
   loginWithEmail,
   registerWithEmail,
 } from '../services/firebase';
+import panicLogo from '../../public/favicon.png';
 
 export const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
   const [tab, setTab] = useState('login'); // 'login' | 'register'
@@ -68,43 +69,43 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-      <div className="relative w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+      <div className="relative w-full max-w-md rounded-2xl border border-red-950/70 bg-zinc-950 p-6 shadow-2xl panic-glow-md">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 pb-4 mb-5">
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400">
-              {tab === 'login' ? <LogIn className="h-5 w-5" /> : <UserPlus className="h-5 w-5" />}
+        <div className="flex items-center justify-between border-b border-zinc-900 pb-4 mb-5">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl overflow-hidden border border-red-600/50 bg-black shrink-0">
+              <img src={panicLogo} alt="PANIC" className="h-full w-full object-cover" />
             </div>
             <div>
-              <h3 className="font-heading text-lg font-bold text-slate-100 uppercase tracking-wide">
-                {tab === 'login' ? 'Entrar na Conta' : 'Criar Nova Conta'}
+              <h3 className="font-heading text-lg font-black text-white uppercase tracking-wider">
+                {tab === 'login' ? 'Entrar no PANIC GAMES' : 'Criar Conta de Jogador'}
               </h3>
-              <p className="text-xs text-slate-400">
-                Salve seu progresso, recordes e estatísticas na nuvem.
+              <p className="text-xs text-zinc-400">
+                Salve recordes, pontuações e tempo na nuvem.
               </p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors"
+            className="rounded-lg p-1.5 text-zinc-400 hover:bg-zinc-900 hover:text-white transition-colors cursor-pointer"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Tab switcher */}
-        <div className="flex rounded-lg border border-slate-800 bg-slate-950 p-1 mb-5">
+        <div className="flex rounded-xl border border-zinc-900 bg-black p-1 mb-5">
           <button
             type="button"
             onClick={() => {
               setTab('login');
               setError('');
             }}
-            className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-all ${
+            className={`flex-1 py-2 text-xs font-black uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
               tab === 'login'
-                ? 'bg-rose-500 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-red-600 text-white shadow-md shadow-red-600/30'
+                : 'text-zinc-400 hover:text-white'
             }`}
           >
             Entrar
@@ -115,10 +116,10 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
               setTab('register');
               setError('');
             }}
-            className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-all ${
+            className={`flex-1 py-2 text-xs font-black uppercase tracking-wider rounded-lg transition-all cursor-pointer ${
               tab === 'register'
-                ? 'bg-rose-500 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-red-600 text-white shadow-md shadow-red-600/30'
+                : 'text-zinc-400 hover:text-white'
             }`}
           >
             Cadastrar
@@ -127,7 +128,7 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
 
         {/* Error notice */}
         {error && (
-          <div className="mb-4 flex items-center gap-2 rounded-lg border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-300">
+          <div className="mb-4 flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-500/10 p-3 text-xs text-red-300">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -138,7 +139,7 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
           type="button"
           disabled={loading}
           onClick={handleGoogleLogin}
-          className="w-full flex items-center justify-center gap-3 rounded-xl border border-slate-700 bg-slate-950 px-4 py-2.5 text-xs font-bold text-slate-100 hover:bg-slate-800 hover:border-slate-600 transition-colors mb-4 shadow-sm"
+          className="w-full flex items-center justify-center gap-3 rounded-xl border border-zinc-800 bg-black px-4 py-2.5 text-xs font-bold text-white hover:border-red-600/60 hover:bg-zinc-900 transition-colors mb-4 shadow-sm cursor-pointer"
         >
           <svg className="h-4 w-4" viewBox="0 0 24 24">
             <path
@@ -163,10 +164,10 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
 
         <div className="relative my-4 flex items-center justify-center">
           <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-800" />
+            <div className="w-full border-t border-zinc-900" />
           </div>
-          <span className="relative bg-slate-900 px-3 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-            Ou use seu e-mail
+          <span className="relative bg-zinc-950 px-3 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
+            Ou com e-mail
           </span>
         </div>
 
@@ -174,22 +175,22 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
         <form onSubmit={handleSubmit} className="space-y-3.5">
           {tab === 'register' && (
             <div>
-              <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                Nome ou Apelido
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
+                Nome ou Apelido de Jogador
               </label>
               <input
                 type="text"
                 required
-                placeholder="Ex: Player1, ShadowNinja"
+                placeholder="Ex: GhostKiller, Phantom"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-rose-500 focus:outline-none"
+                className="w-full rounded-xl border border-zinc-800 bg-black px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:border-red-500 focus:outline-none"
               />
             </div>
           )}
 
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
               E-mail
             </label>
             <input
@@ -198,29 +199,29 @@ export const AuthModal = ({ isOpen, onClose, onAuthSuccess }) => {
               placeholder="seuemail@exemplo.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-rose-500 focus:outline-none"
+              className="w-full rounded-xl border border-zinc-800 bg-black px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:border-red-500 focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+            <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-1">
               Senha
             </label>
             <input
               type="password"
               required
               minLength={6}
-              placeholder="Pelo menos 6 caracteres"
+              placeholder="Mínimo 6 caracteres"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-xl border border-slate-700 bg-slate-950 px-3.5 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-rose-500 focus:outline-none"
+              className="w-full rounded-xl border border-zinc-800 bg-black px-3.5 py-2 text-xs text-white placeholder-zinc-600 focus:border-red-500 focus:outline-none"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-rose-500 px-4 py-2.5 text-xs font-bold text-white hover:bg-rose-600 transition-colors shadow-lg shadow-rose-500/25 mt-4 disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-2.5 text-xs font-black uppercase tracking-wider text-white hover:bg-red-500 transition-colors shadow-lg shadow-red-600/30 mt-4 disabled:opacity-50 cursor-pointer"
           >
             {loading ? (
               <Loader2 className="h-4 w-4 animate-spin" />

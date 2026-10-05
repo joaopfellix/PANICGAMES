@@ -7,9 +7,10 @@ import { GamePlayer } from './components/GamePlayer';
 import { AuthModal } from './components/AuthModal';
 import { UserProfileModal } from './components/UserProfileModal';
 import { DisguiseView } from './components/DisguiseView';
-import { Gamepad2, User } from 'lucide-react';
+import { Gamepad2 } from 'lucide-react';
 import { auth } from './services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
+import panicLogo from '../public/favicon.png';
 
 export default function App() {
   const [games, setGames] = useState(() => {
@@ -65,7 +66,7 @@ export default function App() {
     } else {
       document.title = selectedGame
         ? `${selectedGame.title} - PANIC GAMES`
-        : 'PANIC GAMES';
+        : 'PANIC GAMES - Escolha seu jogo';
     }
     return () => {
       document.title = originalTitle;
@@ -133,7 +134,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-black text-slate-100 flex flex-col selection:bg-red-600 selection:text-white">
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -170,28 +171,29 @@ export default function App() {
             />
 
             {/* Filter and Category Section */}
-            <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/80 pb-6">
+            <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-900 pb-6">
                 <div>
-                  <h2 className="font-heading text-2xl font-bold uppercase tracking-wider text-slate-100">
-                    Catálogo de Jogos
+                  <h2 className="font-heading text-2xl sm:text-3xl font-black uppercase tracking-wider text-white flex items-center gap-2">
+                    <span>Catálogo</span>
+                    <span className="text-red-500 panic-glow-text font-black">PANIC</span>
                   </h2>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-zinc-400 mt-1">
                     {filteredGames.length} {filteredGames.length === 1 ? 'jogo disponível' : 'jogos disponíveis'}
                     {searchQuery ? ` para a busca "${searchQuery}"` : ''}
                   </p>
                 </div>
 
                 {/* Segmented Category Buttons */}
-                <div className="flex items-center gap-1.5 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
+                <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
                   {categories.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => setActiveTab(cat.id)}
-                      className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-colors whitespace-nowrap shrink-0 ${
+                      className={`px-3.5 py-1.5 text-xs font-black uppercase tracking-wider rounded-xl transition-all whitespace-nowrap shrink-0 cursor-pointer ${
                         activeTab === cat.id
-                          ? 'bg-rose-500 text-white shadow-sm shadow-rose-500/20'
-                          : 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-slate-100 hover:border-slate-700'
+                          ? 'bg-red-600 text-white shadow-lg shadow-red-600/30 panic-glow-sm'
+                          : 'bg-zinc-950 border border-zinc-900 text-zinc-400 hover:text-white hover:border-zinc-800'
                       }`}
                     >
                       {cat.label}
@@ -214,14 +216,14 @@ export default function App() {
                   ))}
                 </div>
               ) : (
-                <div className="mt-16 flex flex-col items-center justify-center text-center p-8 rounded-xl border border-dashed border-slate-800 bg-slate-900/40 max-w-md mx-auto">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-slate-800 text-slate-400 mb-3">
+                <div className="mt-16 flex flex-col items-center justify-center text-center p-8 rounded-2xl border border-dashed border-zinc-900 bg-zinc-950/60 max-w-md mx-auto">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-900 text-red-500 mb-3 border border-red-950">
                     <Gamepad2 className="h-6 w-6" />
                   </div>
-                  <h3 className="font-heading text-lg font-bold text-slate-200">
+                  <h3 className="font-heading text-lg font-black text-white uppercase tracking-wider">
                     Nenhum jogo encontrado
                   </h3>
-                  <p className="text-xs text-slate-400 mt-1 mb-4 leading-relaxed">
+                  <p className="text-xs text-zinc-400 mt-1 mb-4 leading-relaxed">
                     Não encontramos nenhum jogo correspondente a sua busca ou filtro.
                   </p>
                   <button
@@ -229,7 +231,7 @@ export default function App() {
                       setSearchQuery('');
                       setActiveTab('all');
                     }}
-                    className="px-4 py-2 rounded-lg bg-slate-800 text-xs font-semibold text-slate-200 hover:bg-slate-700 transition-colors"
+                    className="px-4 py-2 rounded-xl bg-red-600 text-xs font-black uppercase tracking-wider text-white hover:bg-red-500 transition-colors shadow-md shadow-red-600/30 cursor-pointer"
                   >
                     Redefinir Filtros
                   </button>
@@ -241,21 +243,24 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-auto border-t border-slate-800/80 bg-slate-950 py-8">
+      <footer className="mt-auto border-t border-red-950/40 bg-black py-8">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <div className="flex items-center gap-2">
-              <span className="font-heading font-black text-slate-200 uppercase tracking-wide">
-                PANIC <span className="text-rose-500">GAMES</span>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+            <div className="flex items-center gap-3">
+              <div className="h-6 w-6 rounded-md overflow-hidden border border-red-600/40 bg-black shrink-0">
+                <img src={panicLogo} alt="PANIC" className="h-full w-full object-cover" />
+              </div>
+              <span className="font-heading font-black text-white uppercase tracking-wider">
+                PANIC <span className="text-red-500 panic-glow-text font-black">GAMES</span>
               </span>
-              <span>·</span>
+              <span className="text-zinc-800">·</span>
               <span>100% Iframe & HTML5 Nativo</span>
-              <span>·</span>
-              <span className="text-emerald-400/80">Sem Recursos de IA</span>
+              <span className="text-zinc-800">·</span>
+              <span className="text-red-500/80">Escolha seu jogo. Entre em pânico. Divirta-se.</span>
             </div>
 
             <div className="flex items-center gap-4">
-              <span>Pressione <kbd className="rounded border border-slate-800 bg-slate-900 px-1 py-0.5 font-mono text-[10px] text-slate-300">Esc</kbd> para ativar o Modo Disfarce</span>
+              <span>Pressione <kbd className="rounded border border-zinc-800 bg-zinc-900 px-1.5 py-0.5 font-mono text-[10px] text-zinc-300">Esc</kbd> para Modo Disfarce</span>
             </div>
           </div>
         </div>
